@@ -1,179 +1,171 @@
-# **Practical Lab: Recursion and Complexity Analysis**
+# **Recursion & Memoization - Practical Lab Correction**
 
-## **🎯 Objective:**
-- Understand and implement different types of recursion.
-- Analyze the complexity of recursive functions.
-- Design optimal recursive solutions.
-
----
-## **1️⃣ Exercise: The Recursive Cashier (Direct Recursion)**
+## **📌 Exercise 1: Fibonacci Sequence (Direct Recursion & Memoization)**
 ### **Problem Statement:**
-A cashier needs to give change using the fewest number of coins. Given an amount `N` and a set of coin denominations `{1, 5, 10, 25, 50, 100}`, write a recursive function to compute the minimum number of coins needed.
+Write a recursive function to compute the `n`th Fibonacci number using:
+1. **Naive Recursion** (direct recursion)
+2. **Memoization** to optimize it
 
-### **Tasks:**
-- Write a recursive function `minCoins(N, coins)` that finds the minimum number of coins.
-- Analyze its complexity and explain why recursion may not be the best approach.
-- Optimize it using memoization.
-
-### **Expected Output:**
+### **Solution:**
+#### **1️⃣ Naive Recursive Fibonacci (Slow)**
 ```python
-minCoins(47, [1, 5, 10, 25])  # Output: 5 (25 + 10 + 10 + 1 + 1)
+# Exponential Time Complexity: O(2^N)
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+```
+
+#### **2️⃣ Optimized Fibonacci using Memoization (Fast)**
+```python
+# Linear Time Complexity: O(N)
+def fibonacci_memo(n, memo={}):
+    if n in memo:
+        return memo[n]
+    if n <= 1:
+        return n
+    memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+    return memo[n]
+```
+
+### **Test Cases & Function Calls:**
+```python
+print(fibonacci(10))  # Output: 55
+print(fibonacci_memo(50))  # Output: 12586269025 (Computes instantly)
 ```
 
 ---
-## **2️⃣ Exercise: Virus Spread (Head Recursion)**
+## **📌 Exercise 2: Factorial (Head Recursion & Tail Recursion)**
 ### **Problem Statement:**
-A computer virus spreads exponentially every hour. If a system starts with `P` infected computers, and each infected computer infects two new computers every hour, how many infected computers will there be after `N` hours?
+Write a recursive function to compute `n!` using:
+1. **Head recursion** (process after recursive call)
+2. **Tail recursion** (process before recursive call)
 
-### **Tasks:**
-- Write a head-recursive function `virusSpread(N, P)`.
-- Determine the time complexity.
-- Modify the recursion to an iterative approach and compare efficiency.
-
-### **Expected Output:**
+### **Solution:**
+#### **1️⃣ Head Recursion Factorial**
 ```python
-virusSpread(3, 1)  # Output: 15 (1 → 3 → 7 → 15)
+# Time Complexity: O(N)
+def factorial_head(n):
+    if n == 0:
+        return 1
+    return n * factorial_head(n - 1)
+```
+
+#### **2️⃣ Tail Recursion Factorial (Optimized)**
+```python
+# Time Complexity: O(N) (Stack optimization possible)
+def factorial_tail(n, acc=1):
+    if n == 0:
+        return acc
+    return factorial_tail(n - 1, n * acc)
+```
+
+### **Test Cases & Function Calls:**
+```python
+print(factorial_head(5))  # Output: 120
+print(factorial_tail(5))  # Output: 120
 ```
 
 ---
-## **3️⃣ Exercise: The Tail-Recursive Factorial (Tail Recursion)**
+## **📌 Exercise 3: Sum of Digits (Nested Recursion)**
 ### **Problem Statement:**
-Factorial calculation is commonly done using direct recursion, but it can be optimized using tail recursion to avoid stack overflow.
+Write a recursive function to compute the sum of digits of a number.
 
-### **Tasks:**
-- Implement a tail-recursive factorial function.
-- Compare it with a non-tail-recursive version.
-- Analyze the complexity and discuss why tail recursion is more memory-efficient.
-
-### **Expected Output:**
+### **Solution:**
 ```python
-factorial(5)  # Output: 120
+def sum_of_digits(n):
+    if n == 0:
+        return 0
+    return n % 10 + sum_of_digits(n // 10)
+```
+
+### **Test Cases & Function Calls:**
+```python
+print(sum_of_digits(12345))  # Output: 15
 ```
 
 ---
-## **4️⃣ Exercise: Pascal’s Triangle (Nested Recursion)**
+## **📌 Exercise 4: Tower of Hanoi (Tree Recursion)**
 ### **Problem Statement:**
-Pascal’s Triangle is defined as:
+Solve the Tower of Hanoi for `n` disks.
 
-\[ C(n, k) = C(n-1, k-1) + C(n-1, k) \]
+### **Solution:**
+```python
+def tower_of_hanoi(n, source, auxiliary, target):
+    if n == 1:
+        print(f"Move disk 1 from {source} to {target}")
+        return
+    tower_of_hanoi(n - 1, source, target, auxiliary)
+    print(f"Move disk {n} from {source} to {target}")
+    tower_of_hanoi(n - 1, auxiliary, source, target)
+```
 
-with base cases:
-
-\[ C(n, 0) = C(n, n) = 1 \]
-
-### **Tasks:**
-- Write a nested recursive function `pascal(n, k)` to compute Pascal’s Triangle.
-- Analyze the complexity and suggest an iterative approach.
-- Print Pascal’s Triangle up to `n = 5`.
-
-### **Expected Output:**
-```plaintext
-1  
-1 1  
-1 2 1  
-1 3 3 1  
-1 4 6 4 1  
+### **Test Cases & Function Calls:**
+```python
+tower_of_hanoi(3, 'A', 'B', 'C')
 ```
 
 ---
-## **5️⃣ Exercise: File System Depth (Tree Recursion)**
+## **📌 Exercise 5: Indirect Recursion (Odd & Even Check)**
 ### **Problem Statement:**
-A computer file system can be represented as a tree. Each folder contains files or subfolders. Given a nested directory structure, compute the maximum depth of the file system.
+Use **indirect recursion** to determine if a number is even or odd.
 
-### **Example:**
+### **Solution:**
 ```python
-file_system = {
-    "home": {
-        "user": {
-            "documents": {
-                "project": {
-                    "file1.txt": None,
-                    "file2.txt": None
-                }
-            }
-        },
-        "downloads": {
-            "movie.mp4": None
-        }
-    }
-}
+def is_even(n):
+    if n == 0:
+        return True
+    return is_odd(n - 1)
+
+def is_odd(n):
+    if n == 0:
+        return False
+    return is_even(n - 1)
 ```
 
-### **Tasks:**
-- Write a tree-recursive function `maxDepth(fs)` to compute the depth.
-- Analyze the complexity and compare with an iterative BFS approach.
-
-### **Expected Output:**
+### **Test Cases & Function Calls:**
 ```python
-maxDepth(file_system)  # Output: 4
+print(is_even(10))  # Output: True
+print(is_odd(11))   # Output: True
 ```
 
 ---
-## **6️⃣ Exercise: Two-Way Communication (Indirect Recursion)**
+## **📌 Exercise 6: Minimum Coins Problem (Dynamic Programming with Memoization)**
 ### **Problem Statement:**
-A phone call alternates between caller and receiver until the conversation ends. The caller speaks first, then the receiver replies, then the caller again, and so on. If the caller starts with `n` sentences, and each reply is `n-1` until `n=0`, simulate the conversation using indirect recursion.
+Find the minimum number of coins required to make `N` using a given set of denominations.
 
-### **Tasks:**
-- Write two mutually recursive functions `caller(n)` and `receiver(n)`.
-- Print a conversation simulation where each side speaks alternately.
-
-### **Expected Output:**
+### **Solution:**
 ```python
-caller(3)
-# Output:
-# Caller: I will speak 3 times.
-# Receiver: I will reply 2 times.
-# Caller: I will speak 1 time.
-# Receiver: I will reply 0 times.
+def min_coins(N, coins, memo={}):
+    if N in memo:
+        return memo[N]
+    if N == 0:
+        return 0
+    min_count = float('inf')
+    for coin in coins:
+        if N >= coin:
+            min_count = min(min_count, 1 + min_coins(N - coin, coins, memo))
+    memo[N] = min_count
+    return min_count
+```
+
+### **Test Cases & Function Calls:**
+```python
+coins = [1, 5, 10, 25]
+print(min_coins(30, coins))  # Output: 2 (25 + 5)
 ```
 
 ---
-## **✨ Bonus Challenge: The Towers of Hanoi (Optimization & Complexity)**
-### **Problem Statement:**
-The classic Towers of Hanoi involves moving `N` disks from `A → C`, using `B` as an auxiliary. The goal is to minimize the number of moves.
+## **🎯 Summary**
+| **Exercise** | **Recursion Type** | **Time Complexity** |
+|-------------|----------------|------------------|
+| Fibonacci | Direct & Memoization | O(2^N) → O(N) |
+| Factorial | Head & Tail | O(N) |
+| Sum of Digits | Nested Recursion | O(log N) |
+| Tower of Hanoi | Tree Recursion | O(2^N) |
+| Odd/Even Check | Indirect Recursion | O(N) |
+| Min Coins Problem | Dynamic with Memoization | O(N * C) |
 
-### **Tasks:**
-- Write a recursive solution for `hanoi(N, A, B, C)`.
-- Prove that the minimum number of moves is \(O(2^N - 1)\).
-- Implement a memoized version and analyze its impact.
+🧠 **Memoization speeds up recursion dramatically by reducing redundant computations.** 🚀
 
-### **Expected Output:**
-```python
-hanoi(3, 'A', 'B', 'C')
-# Output:
-# Move disk 1 from A to C
-# Move disk 2 from A to B
-# Move disk 1 from C to B
-# Move disk 3 from A to C
-# Move disk 1 from B to A
-# Move disk 2 from B to C
-# Move disk 1 from A to C
-```
-
----
-## **📌 Student Deliverables:**
-- Implement all exercises in Python.
-- Analyze the complexity of each algorithm.
-- Optimize solutions where possible (memoization, iteration).
-- Write a short report explaining:
-  - The recursion type used.
-  - The base case and recursive case.
-  - Time complexity analysis.
-  - Alternative iterative solutions (if applicable).
-
----
-## **🔎 Key Takeaways:**
-✅ Recursion is powerful but must be optimized to avoid inefficiency.  
-✅ Tail recursion improves space complexity.  
-✅ Tree recursion can model hierarchical structures like file systems.  
-✅ Memoization significantly improves performance.  
-✅ Indirect recursion models real-world interactions like phone calls.  
-
----
-## **🔥 Motivation Strategy:**
-💡 Gamify the lab: Give points for correct implementations & optimizations.  
-💡 Relate to real-world examples: Virus spread, file systems, transactions.  
-💡 Show optimization tricks: Memoization, tail recursion, iterative methods.  
-💡 Give a challenge: Implement an alternative approach for each problem.  
-
-🎯 **Happy Coding!** 🚀
+**Happy Coding!** 🎯🔥
